@@ -3,6 +3,7 @@ import Select from 'react-select'
 import countryList from 'react-select-country-list'
 import { supabase } from './supabase'
 import { countries } from 'countries-list'
+import { History, Dumbbell, Trophy, Users, User, Menu } from 'lucide-react'
 import './App.css'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
   const [password, setPassword] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [signupAttempted, setSignupAttempted] = useState(false)
+  const [showMainMenu, setShowMainMenu] = useState(true)
 
   const countryOptions = useMemo(() => countryList().getData(), [])
 
@@ -26,7 +28,8 @@ function App() {
     if (!username || !email || !password || !country || !agreedToTerms) {
       return
     }
-    const { data, error } = await supabase.auth.signUp({
+
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -42,8 +45,77 @@ function App() {
       console.error('Signup error:', error.message)
     } else {
       console.log('Account created successfully')
+      setShowMainMenu(true)
     }
-    }
+  }
+
+  if (showMainMenu) {
+    return (
+      <div className="main-menu">
+        <div className="main-header">
+          <button className="icon-button">
+            <Menu size={23} />
+          </button>
+
+          <div className="main-title">
+            <h1>Quiblyx</h1>
+            <p>Reach the top. Become the best in the world.</p>
+          </div>
+
+          <button className="icon-button">
+            <User size={21} />
+          </button>
+        </div>
+
+        <div className="rank-section">
+          <div className="rank-card side-card">
+            <p>#129</p>
+            <h2>PlayerBehind</h2>
+            <span>1,418 pts</span>
+          </div>
+
+          <div className="rank-card main-rank-card">
+            <p>Your Rank</p>
+            <h2>#128</h2>
+            <span>1,425 pts</span>
+          </div>
+
+          <div className="rank-card side-card">
+            <p>#127</p>
+            <h2>PlayerAhead</h2>
+            <span>1,430 pts</span>
+          </div>
+        </div>
+
+        <div className="leaderboard-switch">
+          <button className="active">Netherlands</button>
+          <button>World</button>
+        </div>
+
+        <div className="main-actions">
+          <button>
+            <History size={19} />
+            <span>Match History</span>
+          </button>
+
+          <button>
+            <Dumbbell size={19} />
+            <span>Practice</span>
+          </button>
+
+          <button>
+            <Trophy size={19} />
+            <span>Competitive</span>
+          </button>
+
+          <button>
+            <Users size={19} />
+            <span>Friends</span>
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="auth-page">
@@ -74,7 +146,9 @@ function App() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={isSignup && signupAttempted && !password ? 'input-error' : ''}
+          className={
+            isSignup && signupAttempted && !password ? 'input-error' : ''
+          }
         />
 
         {isSignup && (
